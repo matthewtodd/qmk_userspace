@@ -9,15 +9,16 @@ const uint16_t PROGMEM esc_combo[]   = {LGUI_T(KC_S), LSFT_T(KC_T), COMBO_END};
 const uint16_t PROGMEM copy_combo[]  = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM paste_combo[] = {KC_C, KC_D, COMBO_END};
 
-const uint16_t PROGMEM bspc_combo[] = {KC_L, KC_U, COMBO_END};
-const uint16_t PROGMEM del_combo[]  = {KC_U, KC_Y, COMBO_END};
-const uint16_t PROGMEM lprn_combo[] = {RSFT_T(KC_N), RGUI_T(KC_E), COMBO_END};
-const uint16_t PROGMEM rprn_combo[] = {RGUI_T(KC_E), RALT_T(KC_I), COMBO_END};
-const uint16_t PROGMEM lbrc_combo[] = {KC_H, KC_COMM, COMBO_END};
-const uint16_t PROGMEM rbrc_combo[] = {KC_COMM, KC_DOT, COMBO_END};
+const uint16_t PROGMEM bspc_combo[]  = {KC_L, KC_U, COMBO_END};
+const uint16_t PROGMEM del_combo[]   = {KC_U, KC_Y, COMBO_END};
+const uint16_t PROGMEM lprn_combo[]  = {RSFT_T(KC_N), RGUI_T(KC_E), COMBO_END};
+const uint16_t PROGMEM rprn_combo[]  = {RGUI_T(KC_E), RALT_T(KC_I), COMBO_END};
+const uint16_t PROGMEM smash_combo[] = {RGUI_T(KC_E), RALT_T(KC_I), RCTL_T(KC_O), COMBO_END};
+const uint16_t PROGMEM lbrc_combo[]  = {KC_H, KC_COMM, COMBO_END};
+const uint16_t PROGMEM rbrc_combo[]  = {KC_COMM, KC_DOT, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(media_combo, MO(2)), COMBO(esc_combo, KC_ESC), COMBO(copy_combo, LGUI(KC_C)), COMBO(paste_combo, LGUI(KC_V)), COMBO(bspc_combo, KC_BSPC), COMBO(del_combo, KC_DEL), COMBO(lprn_combo, KC_LPRN), COMBO(rprn_combo, KC_RPRN), COMBO(lbrc_combo, KC_LBRC), COMBO(rbrc_combo, KC_RBRC),
+    COMBO(media_combo, MO(2)), COMBO(esc_combo, LSG_T(KC_ESC)), COMBO(copy_combo, LGUI(KC_C)), COMBO(paste_combo, LGUI(KC_V)), COMBO(bspc_combo, KC_BSPC), COMBO(del_combo, KC_DEL), COMBO(lprn_combo, MT(MOD_RSFT | MOD_RGUI, KC_LPRN)), COMBO(rprn_combo, MT(MOD_RGUI | MOD_RALT, KC_RPRN)), COMBO(smash_combo, RGUI(RALT(KC_RCTL))), COMBO(lbrc_combo, KC_LBRC), COMBO(rbrc_combo, KC_RBRC),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {[0] = LAYOUT_split_3x5_2(KC_Q, KC_W, KC_F, KC_P, KC_B, KC_J, KC_L, KC_U, KC_Y, KC_QUOT, LCTL_T(KC_A), LALT_T(KC_R), LGUI_T(KC_S), LSFT_T(KC_T), KC_G, KC_M, RSFT_T(KC_N), RGUI_T(KC_E), RALT_T(KC_I), RCTL_T(KC_O), KC_Z, KC_X, KC_C, KC_D, KC_V, KC_K, KC_H, KC_COMM, KC_DOT, KC_SLSH, LT(1, KC_SPC), KC_TAB, LT(4, KC_ENT), LT(3, KC_BSPC)),
