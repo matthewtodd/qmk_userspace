@@ -56,6 +56,7 @@ typedef enum {
     TD_NONE,
     TD_UNKNOWN,
     TD_SINGLE_TAP,
+    TD_SINGLE_TAP_SHIFTED,
     TD_SINGLE_HOLD,
 } td_state_t;
 
@@ -64,7 +65,10 @@ static td_state_t td_state;
 td_state_t cur_dance(tap_dance_state_t *state) {
     if (state->count == 1) {
         if (state->interrupted || !state->pressed)
-            return TD_SINGLE_TAP;
+            if (get_mods() & MOD_MASK_SHIFT)
+                return TD_SINGLE_TAP_SHIFTED;
+            else
+                return TD_SINGLE_TAP;
         else
             return TD_SINGLE_HOLD;
     } else
@@ -76,6 +80,9 @@ void rsft_rgui_lprn_finished(tap_dance_state_t *state, void *user_data) {
     switch (td_state) {
         case TD_SINGLE_TAP:
             register_code16(KC_LPRN);
+            break;
+        case TD_SINGLE_TAP_SHIFTED:
+            register_code16(KC_LT);
             break;
         case TD_SINGLE_HOLD:
             register_mods(MOD_BIT(KC_RSFT) | MOD_BIT(KC_RGUI));
@@ -89,6 +96,9 @@ void rsft_rgui_lprn_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_state) {
         case TD_SINGLE_TAP:
             unregister_code16(KC_LPRN);
+            break;
+        case TD_SINGLE_TAP_SHIFTED:
+            unregister_code16(KC_LT);
             break;
         case TD_SINGLE_HOLD:
             unregister_mods(MOD_BIT(KC_RSFT) | MOD_BIT(KC_RGUI));
@@ -104,6 +114,9 @@ void rgui_ralt_rprn_finished(tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_TAP:
             register_code16(KC_RPRN);
             break;
+        case TD_SINGLE_TAP_SHIFTED:
+            register_code16(KC_GT);
+            break;
         case TD_SINGLE_HOLD:
             register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
             break;
@@ -116,6 +129,9 @@ void rgui_ralt_rprn_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_state) {
         case TD_SINGLE_TAP:
             unregister_code16(KC_RPRN);
+            break;
+        case TD_SINGLE_TAP_SHIFTED:
+            unregister_code16(KC_GT);
             break;
         case TD_SINGLE_HOLD:
             unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
