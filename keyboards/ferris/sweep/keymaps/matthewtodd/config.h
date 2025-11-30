@@ -40,6 +40,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define QUICK_TAP_TERM 0
 #define FLOW_TAP_TERM 150
 
+// https://docs.qmk.fm/features/combo#combo-term
+#define COMBO_TERM 25
+
 // Underglow configuration
 #ifdef RGBLIGHT_ENABLE
 #    define RGBLIGHT_EFFECT_BREATHING
