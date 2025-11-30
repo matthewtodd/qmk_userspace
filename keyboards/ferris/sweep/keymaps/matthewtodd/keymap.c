@@ -5,7 +5,7 @@
 #endif
 
 enum layer_names {
-    BASE,
+    COLEMAK_DH,
     NAV,
     MEDIA,
     NUM,
@@ -13,7 +13,7 @@ enum layer_names {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [BASE] = LAYOUT_split_3x5_2(
+    [COLEMAK_DH] = LAYOUT_split_3x5_2(
         KC_Q, KC_W, KC_F, KC_P, KC_B, KC_J, KC_L, KC_U, KC_Y, KC_QUOT,
         LCTL_T(KC_A), LALT_T(KC_R), LGUI_T(KC_S), LSFT_T(KC_T), KC_G, KC_M, RSFT_T(KC_N), RGUI_T(KC_E), RALT_T(KC_I), RCTL_T(KC_O),
         KC_Z, KC_X, KC_C, KC_D, KC_V, KC_K, KC_H, KC_COMM, KC_DOT, KC_SLSH,
