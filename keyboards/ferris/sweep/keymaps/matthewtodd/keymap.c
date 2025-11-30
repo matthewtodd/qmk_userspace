@@ -38,6 +38,90 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT_split_
     'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R',
     'L', 'L', 'R', 'R');
 
+// https://docs.qmk.fm/features/tap_dance#example-5
+enum td_keycodes {
+    RSFT_RGUI_LPRN,
+    RGUI_RALT_RPRN
+};
+
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+} td_state_t;
+
+static td_state_t td_state;
+
+td_state_t cur_dance(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed)
+            return TD_SINGLE_TAP;
+        else
+            return TD_SINGLE_HOLD;
+    } else
+        return TD_UNKNOWN;
+}
+
+void rsft_rgui_lprn_finished(tap_dance_state_t *state, void *user_data) {
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            register_code16(KC_LPRN);
+            break;
+        case TD_SINGLE_HOLD:
+            register_mods(MOD_BIT(KC_RSFT) | MOD_BIT(KC_RGUI));
+            break;
+        default:
+            break;
+    }
+}
+
+void rsft_rgui_lprn_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            unregister_code16(KC_LPRN);
+            break;
+        case TD_SINGLE_HOLD:
+            unregister_mods(MOD_BIT(KC_RSFT) | MOD_BIT(KC_RGUI));
+            break;
+        default:
+            break;
+    }
+}
+
+void rgui_ralt_rprn_finished(tap_dance_state_t *state, void *user_data) {
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            register_code16(KC_RPRN);
+            break;
+        case TD_SINGLE_HOLD:
+            register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
+            break;
+        default:
+            break;
+    }
+}
+
+void rgui_ralt_rprn_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            unregister_code16(KC_RPRN);
+            break;
+        case TD_SINGLE_HOLD:
+            unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
+            break;
+        default:
+            break;
+    }
+}
+
+tap_dance_action_t tap_dance_actions[] = {
+    [RSFT_RGUI_LPRN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rsft_rgui_lprn_finished, rsft_rgui_lprn_reset),
+    [RGUI_RALT_RPRN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rgui_ralt_rprn_finished, rgui_ralt_rprn_reset),
+};
+
 const uint16_t PROGMEM media_combo[] = {KC_F, KC_P, COMBO_END};
 const uint16_t PROGMEM esc_combo[]   = {LGUI_T(KC_S), LSFT_T(KC_T), COMBO_END};
 const uint16_t PROGMEM copy_combo[]  = {KC_X, KC_C, COMBO_END};
@@ -57,8 +141,8 @@ combo_t key_combos[] = {
     COMBO(paste_combo, LGUI(KC_V)),
     COMBO(bspc_combo, KC_BSPC),
     COMBO(del_combo, KC_DEL),
-    COMBO(lprn_combo, MT(MOD_RSFT | MOD_RGUI, KC_LPRN)),
-    COMBO(rprn_combo, MT(MOD_RGUI | MOD_RALT, KC_RPRN)),
+    COMBO(lprn_combo, TD(RSFT_RGUI_LPRN)),
+    COMBO(rprn_combo, TD(RGUI_RALT_RPRN)),
     COMBO(lbrc_combo, KC_LBRC),
     COMBO(rbrc_combo, KC_RBRC),
 };
