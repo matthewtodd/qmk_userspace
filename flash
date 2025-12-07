@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -euo pipefail
+
+qmk flash -kb ferris/sweep -km matthewtodd -bl uf2-split-left
+qmk flash -kb ferris/sweep -km matthewtodd -bl uf2-split-right
