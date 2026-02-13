@@ -162,7 +162,7 @@ const uint16_t PROGMEM lbrc_combo[] = {KC_W, KC_COMM, COMBO_END};
 const uint16_t PROGMEM rbrc_combo[] = {KC_COMM, KC_DOT, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(mouse_combo, TG(MOUSE)),
+    COMBO(mouse_combo, MO(MOUSE)),
     COMBO(media_combo, MO(MEDIA)),
     COMBO(esc_combo, LSG_T(KC_ESC)),
     COMBO(copy_combo, LGUI(KC_C)),
