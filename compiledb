@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -euo pipefail
+
+# I'm hoping this will help make the language server happy.
+# https://docs.qmk.fm/other_vscode#configuring-vs-code
+qmk compile -kb ferris/sweep -km matthewtodd --compiledb
