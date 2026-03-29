@@ -174,3 +174,9 @@ combo_t key_combos[] = {
     COMBO(lbrc_combo, KC_LBRC),
     COMBO(rbrc_combo, KC_RBRC),
 };
+
+#ifdef COMBO_MUST_TAP_PER_COMBO
+bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
+    return true;
+}
+#endif

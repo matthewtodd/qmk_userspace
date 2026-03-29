@@ -30,3 +30,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // https://docs.qmk.fm/features/combo#combo-term
 #define COMBO_TERM 25
+// https://docs.qmk.fm/features/combo#per-combo-timing-holding-tapping-and-key-press-order
+#define COMBO_MUST_TAP_PER_COMBO
