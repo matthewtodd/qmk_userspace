@@ -148,6 +148,21 @@ tap_dance_action_t tap_dance_actions[] = {
     [RGUI_RALT_RPRN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rgui_ralt_rprn_finished, rgui_ralt_rprn_reset),
 };
 
+enum combos {
+    LH_MOUSE,
+    HG_MEDIA,
+    NT_ESC,
+    XM_COPY,
+    MD_PASTE,
+
+    FO_BSPC,
+    OU_DEL,
+    CA_LPRN,
+    AE_RPRN,
+    WC_LBRC,
+    CD_RBRC,
+};
+
 const uint16_t PROGMEM mouse_combo[] = {KC_L, KC_H, COMBO_END};
 const uint16_t PROGMEM media_combo[] = {KC_H, KC_G, COMBO_END};
 const uint16_t PROGMEM esc_combo[]   = {LGUI_T(KC_N), LSFT_T(KC_T), COMBO_END};
@@ -162,21 +177,29 @@ const uint16_t PROGMEM lbrc_combo[] = {KC_W, KC_COMM, COMBO_END};
 const uint16_t PROGMEM rbrc_combo[] = {KC_COMM, KC_DOT, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(mouse_combo, MO(MOUSE)),
-    COMBO(media_combo, MO(MEDIA)),
-    COMBO(esc_combo, LSG_T(KC_ESC)),
-    COMBO(copy_combo, LGUI(KC_C)),
-    COMBO(paste_combo, LGUI(KC_V)),
-    COMBO(bspc_combo, KC_BSPC),
-    COMBO(del_combo, KC_DEL),
-    COMBO(lprn_combo, TD(RSFT_RGUI_LPRN)),
-    COMBO(rprn_combo, TD(RGUI_RALT_RPRN)),
-    COMBO(lbrc_combo, KC_LBRC),
-    COMBO(rbrc_combo, KC_RBRC),
+    [LH_MOUSE] = COMBO(mouse_combo, MO(MOUSE)),
+    [HG_MEDIA] = COMBO(media_combo, MO(MEDIA)),
+    [NT_ESC]   = COMBO(esc_combo, LSG_T(KC_ESC)),
+    [XM_COPY]  = COMBO(copy_combo, LGUI(KC_C)),
+    [MD_PASTE] = COMBO(paste_combo, LGUI(KC_V)),
+
+    [FO_BSPC] = COMBO(bspc_combo, KC_BSPC),
+    [OU_DEL]  = COMBO(del_combo, KC_DEL),
+    [CA_LPRN] = COMBO(lprn_combo, TD(RSFT_RGUI_LPRN)),
+    [AE_RPRN] = COMBO(rprn_combo, TD(RGUI_RALT_RPRN)),
+    [WC_LBRC] = COMBO(lbrc_combo, KC_LBRC),
+    [CD_RBRC] = COMBO(rbrc_combo, KC_RBRC),
 };
 
 #ifdef COMBO_MUST_TAP_PER_COMBO
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
-    return true;
+    switch (combo_index) {
+        case CA_LPRN:
+            return true;
+        case AE_RPRN:
+            return true;
+    }
+
+    return false;
 }
 #endif
