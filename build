@@ -1,0 +1,133 @@
+#!/bin/bash
+
+set -euo pipefail
+
+usage() {
+  cat <<-END
+usage: build [-I] firmware [-k <keyboard>]
+       build [-I] keymap [-k <keyboard>]
+       build [-I] shell
+
+  global options:
+    -I             build docker image
+
+  commands:
+    firmware       build keyboard firmware (default)
+    keymap         draw keyboard keymap
+    shell          start an interactive shell in the docker container
+
+  options:
+    -k <keyboard>  select keyboard
+
+  keyboards:
+    ferris_sweep (default)
+
+END
+}
+
+docker_run() {
+  build=$(mktemp -d -t zmk-config)
+
+  if [ -z "${1+x}" ]; then
+    local tty="--tty"
+  fi
+
+  docker run --rm --env build=/app/qmk_firmware/.build --interactive ${tty:-} \
+    --mount type=bind,src=${build},dst=/app/qmk_firmware/.build \
+    --mount type=bind,src=./config,dst=/app/qmk_userspace,readonly \
+    --mount type=bind,src=./config,dst=/app/config,readonly \
+    --mount type=bind,src=./firmware,dst=/app/firmware,bind-create-src \
+    --mount type=bind,src=./img,dst=/app/img,bind-create-src \
+    qmk_userspace "$@"
+}
+
+qmk() {
+  docker_run qmk "$@"
+}
+
+keymap() {
+  docker_run keymap "$@"
+}
+
+while getopts "I" opt; do
+  case ${opt} in
+    I) docker build --tag qmk_userspace . ;;
+   \?) usage; exit 1 ;;
+  esac
+done
+
+shift $((OPTIND-1))
+command=${1:-default}
+shift||
+OPTIND=1
+
+case ${command} in
+  firmware|default)
+    while getopts "k:" opt; do
+      case ${opt} in
+        k) keyboard=${OPTARG} ;;
+       \?) usage; exit 1 ;;
+      esac
+    done
+
+    case ${keyboard:-default} in
+      ferris_sweep|default)
+        qmk compile -kb ferris/sweep -km matthewtodd -j 12
+        cp ${build}/ferris_sweep_matthewtodd.uf2 firmware/ferris_sweep.uf2
+        open -R firmware/ferris_sweep.uf2
+        ;;
+      *)
+        echo "${0}: unrecognized keyboard -- ${keyboard}"
+        usage
+        exit 1
+        ;;
+    esac
+    ;;
+
+  keymap)
+    while getopts "k:" opt; do
+      case ${opt} in
+        k) keyboard=${OPTARG} ;;
+       \?) usage; exit 1 ;;
+      esac
+    done
+
+    case ${keyboard:-default} in
+      ferris_sweep|default)
+        qmk c2json -kb ferris/sweep -km matthewtodd \
+          | sed -e s/NAV/1/g -e s/SYM/4/g -e s/NUM/5/g \
+          | keymap -c config/keymap-drawer.yml parse -l Focal Nav Mouse Media Num Sym -q - \
+          | keymap -c config/keymap-drawer.yml draw -o img/ferris_sweep.svg -
+        open img/ferris_sweep.svg
+        ;;
+      *)
+        echo "${0}: unrecognized keyboard -- ${keyboard}"
+        usage
+        exit 1
+        ;;
+    esac
+    ;;
+
+  shell)
+    # NOTE(mt): All the unnecessary-looking Docker bind mounts above, the cute
+    # west and keymap wrappers around docker run, the awkward dependency on the
+    # side-effecty $build global variable, and all the seeming duplication of
+    # commands in the case statements, actually work together beautifully:
+    #
+    # Their interrelationships mean that any docker-using commands in this
+    # script can be copy-pasted directly into a docker container shell and run
+    # unmodified!
+    #
+    # I imagine this is going to be super nice for both iterating on new
+    # settings and fixing any problems live, then easily codifying my learnings
+    # back in this script!
+    docker_run
+    ;;
+
+  *)
+    echo "${0}: unrecognized command -- ${command}"
+    usage
+    exit 1
+    ;;
+
+esac

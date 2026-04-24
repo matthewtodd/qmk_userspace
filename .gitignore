@@ -1,6 +1,1 @@
-.cache/
-
-# Firmware files
-*.hex
-*.bin
-*.uf2
+firmware
